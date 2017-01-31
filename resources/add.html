@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>emilgur | Add Image</title>
+        <style>
+            .padded { margin:2px; }
+            .red { color:red; }
+        </style>
+    </head>
+    <body onload="document.getElementsByName('img_url')[0].focus();">
+        <form method="POST" action="/add">
+            <span class="red">{{error}}</span><br/>
+            <input type="text" name="img_url" placeholder="Image URL" class="padded" value="{{url}}" /><br/>
+            <input type="text" name="img_name" placeholder="Image filename w/o ext" class="padded" value="{{name}}" /><br/>
+            <input type="password" name="password" placeholder="Password" class="padded"><br/>
+            <input type="submit" value="Submit"  class="padded"><br/>
+            <a href="/" target="_blank">Go to emilgur (opens in a new tab)</a>
+        </form>
+    </body>
+</html>

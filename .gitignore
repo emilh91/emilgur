@@ -1,0 +1,6 @@
+.vscode/
+node_modules/
+img/*.gif
+img/*.png
+resources/index-output.html
+config.json
