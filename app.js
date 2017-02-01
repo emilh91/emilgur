@@ -12,7 +12,7 @@ var port = config.serverPort;
 var makeUrlForImage = function(filename) {
     var protocol = config.https ? "https" : "http";
     var hostname = config.hostname;
-    return `${protocol}://${hostname}/img/${filename}`;
+    return `${protocol}://${hostname}/${filename}`;
 };
 var makeIndexOutputFile = function() {
     var lines = [];
@@ -126,24 +126,6 @@ app.post('/add', function(req, res) {
         });
     }
 });
-app.get('/img/:filename', function(req, res) {
-    var filename = req.params.filename;
-    if (filename.includes('..')) {
-        res.status(403).send('Forbidden');
-    }
-    else if (fsp.existsSync(__dirname+'/img/'+filename)) {
-        res.sendFile(__dirname+'/img/'+filename);
-    }
-    else if (fsp.existsSync(__dirname+'/img/'+filename+'.gif')) {
-        res.sendFile(__dirname+'/img/'+filename+'.gif');
-    }
-    else if (fsp.existsSync(__dirname+'/img/'+filename+'.png')) {
-        res.sendFile(__dirname+'/img/'+filename+'.png');
-    }
-    else {
-        res.status(404).send('Not Found');
-    }
-});
 app.get('/make', function(req, res) {
     makeIndexOutputFile().then(function() {
         res.redirect('/');
@@ -172,6 +154,24 @@ app.get('/search', function(req, res) {
     }
     
     res.send(data);
+});
+app.get('/:filename', function(req, res) {
+    var filename = req.params.filename;
+    if (filename.includes('..')) {
+        res.status(403).send('Forbidden');
+    }
+    else if (fsp.existsSync(__dirname+'/img/'+filename)) {
+        res.sendFile(__dirname+'/img/'+filename);
+    }
+    else if (fsp.existsSync(__dirname+'/img/'+filename+'.gif')) {
+        res.sendFile(__dirname+'/img/'+filename+'.gif');
+    }
+    else if (fsp.existsSync(__dirname+'/img/'+filename+'.png')) {
+        res.sendFile(__dirname+'/img/'+filename+'.png');
+    }
+    else {
+        res.status(404).send('Not Found');
+    }
 });
 
 app.listen(port, 'localhost', function() {
