@@ -1,7 +1,7 @@
 {
-  "sessionSecret": "",
+  "sessionSecret": "YOUR_SESSION_SECRET",
   "imageAdditionPassword": "",
   "https": false,
-  "hostname": "",
-  "serverPort": 3001
+  "appExternalSite": "example.com/img",
+  "appInternalPort": 3001
 }

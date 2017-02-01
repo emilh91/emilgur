@@ -8,11 +8,13 @@ var url = require('url');
 var fsp = require('fs-promise');
 var config = require(__dirname+'/config.json');
 
-var port = config.serverPort;
-var makeUrlForImage = function(filename) {
+var port = config.appInternalPort;
+var urlize = function(uri) {
+    if (uri === undefined) uri = '';
+    if (uri.charAt(0) === '/') uri = uri.substr(1);
     var protocol = config.https ? "https" : "http";
-    var hostname = config.hostname;
-    return `${protocol}://${hostname}/${filename}`;
+    var sitename = config.appExternalSite;
+    return `${protocol}://${sitename}/${uri}`;
 };
 var makeIndexOutputFile = function() {
     var lines = [];
@@ -94,7 +96,7 @@ app.post('/add', function(req, res) {
         req.flash('add_error', add_error);
         req.flash('add_url', img_url);
         req.flash('add_name', img_name);
-        res.redirect('/add');
+        res.redirect(urlize('/add'));
     }
     else {
         var options = {
@@ -117,18 +119,18 @@ app.post('/add', function(req, res) {
         }).then(function() {
             return makeIndexOutputFile();
         }).then(function(res3) {
-            res.redirect('/');
+            res.redirect(urlize('/'));
         }).catch(function(err) {
             req.flash('add_error', err.message);
             req.flash('add_url', img_url);
             req.flash('add_name', img_name);
-            res.redirect('/add');
+            res.redirect(urlize('/add'));
         });
     }
 });
 app.get('/make', function(req, res) {
     makeIndexOutputFile().then(function() {
-        res.redirect('/');
+        res.redirect(urlize('/'));
     });
 });
 app.get('/search', function(req, res) {
@@ -143,13 +145,13 @@ app.get('/search', function(req, res) {
     }
     else {
         if (fsp.existsSync(__dirname+'/img/'+q)) {
-            data.results.push(makeUrlForImage(q));
+            data.results.push(urlize(q));
         }
         if (fsp.existsSync(__dirname+'/img/'+q+'.gif')) {
-            data.results.push(makeUrlForImage(q+'.gif'));
+            data.results.push(urlize(q+'.gif'));
         }
         if (fsp.existsSync(__dirname+'/img/'+q+'.png')) {
-            data.results.push(makeUrlForImage(q+'png'));
+            data.results.push(urlize(q+'png'));
         }
     }
     
