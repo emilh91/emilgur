@@ -151,7 +151,7 @@ app.get('/search', function(req, res) {
             data.results.push(urlize(q+'.gif'));
         }
         if (fsp.existsSync(__dirname+'/img/'+q+'.png')) {
-            data.results.push(urlize(q+'png'));
+            data.results.push(urlize(q+'.png'));
         }
         if (data.results.length === 0) {
             data.error = 'No results';
@@ -183,7 +183,7 @@ app.post('/slack', function(req, res) {
     var options = {
         method: 'GET',
         uri: `http://localhost:${port}/search`,
-        qs: { q: $query },
+        qs: { q: query },
         resolveWithFullResponse: true,
         json: true,
     };
