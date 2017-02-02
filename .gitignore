@@ -1,6 +1,5 @@
 .vscode/
 node_modules/
-img/*.gif
-img/*.png
+img/
 resources/index-output.html
 config.json

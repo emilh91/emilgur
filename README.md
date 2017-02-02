@@ -19,6 +19,7 @@ It's an image gallery framework.
 $ git clone https://github.com/emilh91/emilgur
 $ cd emilgur
 $ npm install
+$ mkdir -p img
 $ cp config.template.json config.json
 ```
 NOTE: You will need to modify `config.json` to suit your needs.

@@ -22,8 +22,6 @@ var makeIndexOutputFile = function() {
         for (var i in files) {
             i = parseInt(i);
             var filename = files[i];
-            if (filename.charAt(0) === '.') continue; // ignore hidden files
-
             var basename = filename.split('.').slice(0,-1).join('.');
             var ext = filename.split('.').pop();
             var label = ext==='gif' ? 'warning' : 'danger';
