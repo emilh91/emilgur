@@ -198,6 +198,7 @@ app.post('/slack', function(req, res) {
             var team_name = req.body.team_domain;
             var who = req.body.user_name;
             var payload = {
+                response_type: 'in_channel',
                 text: `<https://${team_name}.slack.com/messages/@${who}|@${who}> posted \`${command} ${query}\``,
                 attachments: [
                     {
@@ -217,7 +218,7 @@ app.post('/slack', function(req, res) {
             };
             rp(options);
         }
-    })
+    });
 });
 
 app.listen(port, 'localhost', function() {
