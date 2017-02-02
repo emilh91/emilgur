@@ -153,6 +153,9 @@ app.get('/search', function(req, res) {
         if (fsp.existsSync(__dirname+'/img/'+q+'.png')) {
             data.results.push(urlize(q+'png'));
         }
+        if (data.results.length === 0) {
+            data.error = 'No results';
+        }
     }
     
     res.send(data);
