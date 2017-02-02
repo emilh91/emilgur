@@ -178,6 +178,47 @@ app.get('/:filename', function(req, res) {
         res.status(404).send('Not Found');
     }
 });
+app.post('/slack', function(req, res) {
+    var query = req.body.text.trim();
+    var options = {
+        method: 'GET',
+        uri: `http://localhost:${port}/search`,
+        qs: { q: $query },
+        resolveWithFullResponse: true,
+        json: true,
+    };
+    rp(options).then(function(res2) {
+        if (res2.body.error) {
+            res.send(res2.body.error);
+        }
+        else {
+            res.end();
+            var image_url = res2.body.results[0];
+            var command = req.body.command;
+            var team_name = req.body.team_domain;
+            var who = req.body.user_name;
+            var payload = {
+                text: `<https://${team_name}.slack.com/messages/@${who}|@${who}> posted \`${command} ${query}\``,
+                attachments: [
+                    {
+                        fallback: image_url,
+                        color: 'good',
+                        text: image_url,
+                        image_url: image_url,
+                    }
+                ]
+            };
+            var options = {
+                method: 'POST',
+                uri: req.body.response_url,
+                body: payload,
+                json: true,
+                resolveWithFullResponse: true,
+            };
+            rp(options);
+        }
+    })
+});
 
 app.listen(port, 'localhost', function() {
     console.log(`Server started on port ${port}...`);
