@@ -48,8 +48,20 @@ app.use(session({
 }));
 app.use(flash());
 
+var logit = function(message) {
+    var now = new Date();
+    var day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][now.getDay()];
+    var year = now.getFullYear();
+    var month = ('0'+(1+now.getMonth())).substr(-2);
+    var date = ('0'+now.getDate()).substr(-2);
+    var hour = ('0'+now.getHours()).substr(-2);
+    var minute = ('0'+now.getMinutes()).substr(-2);
+    var second = ('0'+now.getSeconds()).substr(-2);
+    console.log(`[${day} ${year}-${month}-${date} ${hour}:${minute}:${second}] ${message}`)
+}
+
 app.use(function(req, res, next) {
-    console.log(`Got ${req.method} request with URI "${req.path}"`);
+    logit(`Got ${req.method} request with URI "${req.path}"`);
     next();
 });
 app.get('/', function(req, res) {
@@ -137,7 +149,7 @@ app.get('/make', function(req, res) {
 });
 app.get('/search', function(req, res) {
     var q = req.query.q;
-    console.log(`Got search request with query "${q}"`);
+    logit(`Got search request with query "${q}"`);
     var data = { q:q, results:[], error:'' };
     
     if (q===undefined || q==='') {
@@ -187,7 +199,7 @@ app.post('/slack', function(req, res) {
     var who = req.body.user_name;
     var team_name = req.body.team_domain;
     var channel_name = req.body.channel_name;
-    console.log(`Got slack request "${command} ${query}" from @${who} in ${team_name}.${channel_name}`);
+    logit(`Got slack request "${command} ${query}" from @${who} in ${team_name}.${channel_name}`);
     var options = {
         method: 'GET',
         uri: `http://localhost:${port}/search`,
@@ -227,12 +239,12 @@ app.post('/slack', function(req, res) {
 });
 
 app.listen(port, 'localhost', function() {
-    console.log(`Server started on port ${port}...`);
+    logit(`Server started on port ${port}...`);
 
     if (!fsp.existsSync(__dirname+'/resources/index-output.html')) {
-        console.log('Generating index output file...');
+        logit('Generating index output file...');
         makeIndexOutputFile().then(function(res) {
-            console.log('Looks like the index output was generated successfully.');
+            logit('Looks like the index output was generated successfully.');
         });
     }
 });
