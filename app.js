@@ -48,6 +48,10 @@ app.use(session({
 }));
 app.use(flash());
 
+app.use(function(req, res, next) {
+    console.log(`Got ${req.method} request with URI "${req.path}"`);
+    next();
+});
 app.get('/', function(req, res) {
     res.sendFile(__dirname+'/resources/index-output.html');
 });
@@ -133,6 +137,7 @@ app.get('/make', function(req, res) {
 });
 app.get('/search', function(req, res) {
     var q = req.query.q;
+    console.log(`Got search request with query "${q}"`);
     var data = { q:q, results:[], error:'' };
     
     if (q===undefined || q==='') {
@@ -177,7 +182,12 @@ app.get('/:filename', function(req, res) {
     }
 });
 app.post('/slack', function(req, res) {
+    var command = req.body.command;
     var query = req.body.text.trim();
+    var who = req.body.user_name;
+    var team_name = req.body.team_domain;
+    var channel_name = req.body.channel_name;
+    console.log(`Got slack request "${command} ${query}" from @${who} in ${team_name}.${channel_name}`);
     var options = {
         method: 'GET',
         uri: `http://localhost:${port}/search`,
@@ -192,9 +202,6 @@ app.post('/slack', function(req, res) {
         else {
             res.end();
             var image_url = res2.body.results[0];
-            var command = req.body.command;
-            var team_name = req.body.team_domain;
-            var who = req.body.user_name;
             var payload = {
                 response_type: 'in_channel',
                 text: `<https://${team_name}.slack.com/messages/@${who}|@${who}> posted \`${command} ${query}\``,
