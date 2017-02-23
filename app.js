@@ -9,6 +9,19 @@ var fsp = require('fs-promise');
 var config = require(__dirname+'/config.json');
 
 var port = config.appInternalPort;
+var dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+var logit = function(message) {
+    var now = new Date();
+    var day = dayNames[now.getDay()].substr(0,3);
+    var year = now.getFullYear();
+    var month = ('0'+(1+now.getMonth())).substr(-2);
+    var date = ('0'+now.getDate()).substr(-2);
+    var hour = ('0'+now.getHours()).substr(-2);
+    var minute = ('0'+now.getMinutes()).substr(-2);
+    var second = ('0'+now.getSeconds()).substr(-2);
+    console.log(`[${day} ${year}-${month}-${date} ${hour}:${minute}:${second}] ${message}`)
+}
 var urlize = function(uri) {
     if (uri === undefined) uri = '';
     if (uri.charAt(0) === '/') uri = uri.substr(1);
@@ -44,21 +57,9 @@ app.use(session({
     secret: config.sessionSecret,
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge:60000 }
+    cookie: {maxAge:60000},
 }));
 app.use(flash());
-
-var logit = function(message) {
-    var now = new Date();
-    var day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][now.getDay()];
-    var year = now.getFullYear();
-    var month = ('0'+(1+now.getMonth())).substr(-2);
-    var date = ('0'+now.getDate()).substr(-2);
-    var hour = ('0'+now.getHours()).substr(-2);
-    var minute = ('0'+now.getMinutes()).substr(-2);
-    var second = ('0'+now.getSeconds()).substr(-2);
-    console.log(`[${day} ${year}-${month}-${date} ${hour}:${minute}:${second}] ${message}`)
-}
 
 app.use(function(req, res, next) {
     logit(`Got ${req.method} request with URI "${req.path}"`);
