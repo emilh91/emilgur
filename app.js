@@ -163,8 +163,8 @@ app.get('/search', function(req, res) {
     
     res.send(data);
 });
-app.get('/:filename', function(req, res) {
-    var filename = req.params.filename;
+app.get('/*', function(req, res) {
+    var filename = req.url.substr(1); // strip leading slash
     if (filename.includes('..')) {
         res.status(403).send('Forbidden');
     }
